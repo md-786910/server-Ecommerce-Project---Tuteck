@@ -3,7 +3,11 @@ const productModel = require("./product.models");
 // this is my credential for database (mysql)
 
 // # creating connection
-const sequelize = new Sequelize("ws1", "root", "root", {
+const SQL_PASSWORD = process.env.SQL_PASSWORD;
+const SQL_USERNAME = process.env.SQL_USERNAME;
+const SQL_DB = process.env.SQL_DB;
+
+const sequelize = new Sequelize(SQL_DB, SQL_USERNAME, SQL_PASSWORD, {
   host: "localhost",
   logging: false,
   dialect: "mysql",
