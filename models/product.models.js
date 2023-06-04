@@ -4,29 +4,29 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: {
         type: DataTypes.STRING,
-        defaultValue: "iweiouwe",
+        allowNull: false,
       },
       description: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
-      price: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-      },
-      qty: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
-      },
-      image: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: "https://via.placeholder.com/150",
-        validate: {
-          isUrl: true,
-        },
-      },
+      // price: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false,
+      // },
+      // qty: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false,
+      //   defaultValue: 0,
+      // },
+      // image: {
+      //   type: DataTypes.STRING,
+      //   allowNull: true,
+      //   defaultValue: "https://via.placeholder.com/150",
+      //   validate: {
+      //     isUrl: true,
+      //   },
+      // },
     },
     {
       timestamps: true,
