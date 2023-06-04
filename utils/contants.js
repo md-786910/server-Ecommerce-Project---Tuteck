@@ -1,2 +1,0 @@
-// define constants
-const DEV = "";

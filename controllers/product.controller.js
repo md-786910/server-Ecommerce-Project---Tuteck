@@ -1,51 +1,39 @@
-const pool = require('../config/db')
+const db = require("../models");
+const Product = db.product;
 
-// Register a User
-exports.registerUser = async (req, res, next) => {
-    try {
-        const { id, name, address } = req.body;
-        console.log(name, id, address);
-        const data = await pool.query("INSERT INTO users (id , name , address) VALUES($1 ,$2 ,$3) RETURNING *", [id, name, address]);
-        res.status(200).json({
-            success: true,
-            data: data.rows,
-            message: "registered user succssfully !"
-        })
+const addProduct = async (req, res) => {
+  try {
+    console.log(req.body);
+    const createprod = await Product.create({
+      title: "product1",
+      description: "product1",
+    });
+    res.status(201).json({
+      data: createprod,
+      status: true,
+      message: "product added successfully",
+    });
+  } catch (error) {
+    // console.log(error);
 
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        })
+    res.status(401).json({ status: false, message: error.message });
+  }
+};
 
-    }
-}
+const getProduct = async (req, res) => {
+  try {
+    const product = await Product.findAll();
+    res.status(201).json({
+      data: product,
+      status: "success",
+      message: "product fetch successfully",
+    });
+  } catch (error) {
+    res.status(401).json({ status: false, message: error.message });
+  }
+};
 
-
-//get  Register a User
-
-exports.getUsers = async (req, res) => {
-
-    try {
-
-        const data = await pool.query('SELECT * FROM users');
-        res.status(200).json({
-            success: true,
-            data: data.rows,
-            message: " text api !"
-        })
-
-
-
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        })
-
-    }
-}
-
-
-
-
+module.exports = {
+  getProduct,
+  addProduct,
+};
