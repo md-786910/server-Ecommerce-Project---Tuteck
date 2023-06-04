@@ -1,22 +1,14 @@
-// packages
-const express = require("express");
+const app = require('./app')
 const { config } = require("dotenv");
-
-// connection
-require("./models");
-
-const app = express();
 
 // config
 config({ path: "./config.env" });
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-// express middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
 
 // server static files
-// #
+
 
 // Routing
 app.get("/", (req, res) => {
