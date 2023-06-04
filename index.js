@@ -1,3 +1,13 @@
+
+const app = require('./app')
+const { config } = require("dotenv");
+
+// config
+config({ path: "./config.env" });
+const PORT = process.env.PORT || 3000;
+
+
+
 // packages
 const express = require("express");
 const morgan = require("morgan");
@@ -22,7 +32,7 @@ app.use(cors({ origin: true }));
 app.use(morgan("dev"));
 
 // server static files
-// #
+
 
 // Routing
 app.get("/", (req, res) => {

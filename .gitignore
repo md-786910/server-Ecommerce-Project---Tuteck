@@ -1,7 +1,9 @@
 # create .gitignore file
 # Ignore Mac system files
 .DS_store
-
+.history
+yarn-error.log
+yarn.lock
 # Ignore node_modules folder
 node_modules
 
