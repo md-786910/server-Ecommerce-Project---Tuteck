@@ -19,6 +19,7 @@ require("./models");
 // ---------------------Routes--------------
 const productRoutes = require("./routes/product.routes");
 const userRoutes = require("./routes/user.routes");
+const orderRoutes = require("./routes/order.routes");
 
 // Model
 const db = require("./models");
@@ -43,6 +44,8 @@ app.get("/", (req, res) => {
 app.use("/api", productRoutes);
 
 app.use("/api", userRoutes);
+
+app.use("/api", orderRoutes);
 
 app.listen(PORT, () => {
   console.log("app is running " + PORT);
