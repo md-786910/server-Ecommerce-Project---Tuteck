@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 const productModel = require("./product.models");
 const userModel = require("./users.models");
 const reviewsModel = require("./reviews.product.models");
+const orderModel =require("./orders.models");
 
 // # creating connection
 // const SQL_PASSWORD = process.env.SQL_PASSWORD;
@@ -42,7 +43,12 @@ db.sequelize = sequelize;
 // creating models
 db.product = productModel(sequelize, DataTypes);
 db.user = userModel(sequelize, DataTypes);
+
+db.reviews= reviewsModel(sequelize, DataTypes);
+db.order= orderModel(sequelize, DataTypes);
+
 db.reviews = reviewsModel(sequelize, DataTypes);
+
 
 // sequelize property
 db.sequelize.sync({ force: true });

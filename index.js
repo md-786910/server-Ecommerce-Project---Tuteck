@@ -20,6 +20,8 @@ require("./models");
 // ---------------------Routes--------------
 const productRoutes = require("./routes/product.routes");
 const userRoutes = require("./routes/user.routes");
+const orderRoutes = require("./routes/order.routes");
+
 const productRouter = require("./api/productApi");
 // Model
 const db = require("./models");
@@ -54,6 +56,7 @@ app.use("/api", productRoutes);
 // user
 app.use("/api", userRoutes);
 
+app.use("/api", orderRoutes);
 // for product listing
 app.use("/api/product", productRouter);
 
