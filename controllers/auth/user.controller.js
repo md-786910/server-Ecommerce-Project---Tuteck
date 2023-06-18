@@ -6,8 +6,9 @@ const randomstring = require("randomstring");
 // ---------------Register---------------
 const Register = async (req, res) => {
   const Model = req.model;
-  const { name, email, password, confirm_password, mobileNo } = req.body;
-  if (!email || !password || !name || !confirm_password || !mobileNo) {
+  const { name, email, password, confirm_password } = req.body;
+
+  if (!email || !password || !name || !confirm_password) {
     return res.status(400).json({
       status: false,
       message: "Required fields missing",
@@ -27,14 +28,13 @@ const Register = async (req, res) => {
     });
     if (exitEmail) {
       return res
-        .status(201)
+        .status(400)
         .json({ status: false, message: "Email already exists" });
     } else {
       const user = await Model.create({
         name: name,
         email: email,
         password: password,
-        mobileNo: mobileNo,
       });
       const info = await sendMail(
         email,
@@ -64,12 +64,18 @@ const Register = async (req, res) => {
   }
 };
 
+const GetRegister = async (req, res) => {
+  const model = req.model;
+  const data = await model.findAll({});
+
+  res.json(data);
+};
 // ---------------Login---------------
 
 const Login = async (req, res) => {
   const Model = req.model;
   const { email, password } = req.body;
-
+  console.log(req.body);
   if (!email || !password)
     return res.status(400).json({ message: "Email and password required" });
   const user = await Model.findOne({
@@ -187,4 +193,5 @@ module.exports = {
   Login,
   ForgotPassword,
   ResetPassword,
+  GetRegister,
 };
