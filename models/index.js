@@ -2,13 +2,15 @@ const { Sequelize, DataTypes } = require("sequelize");
 const productModel = require("./product.models");
 const userModel = require("./users.models");
 const reviewsModel = require("./reviews.product.models");
-const orderModel =require("./orders.models");
+const orderModel = require("./orders.models");
+const cartModel = require("./cart.product.model");
 
 // # creating connection
 // const SQL_PASSWORD = process.env.SQL_PASSWORD;
 // const SQL_USERNAME = process.env.SQL_USERNAME;
 // const SQL_DB = process.env.SQL_DB;
 // const HOST_NAME = process.env.HOST_NAME;
+
 const DB_URL = process.env.DB_URL;
 const sequelize = new Sequelize(DB_URL, {
   dialect: "postgres",
@@ -40,17 +42,18 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// creating models
-db.product = productModel(sequelize, DataTypes);
+// user related db
 db.user = userModel(sequelize, DataTypes);
 
-db.reviews= reviewsModel(sequelize, DataTypes);
-db.order= orderModel(sequelize, DataTypes);
+// product related db
+db.product = productModel(sequelize, DataTypes);
+db.cart = cartModel(sequelize, DataTypes);
+db.order = orderModel(sequelize, DataTypes);
+db.reviews = reviewsModel(sequelize, DataTypes);
 
 db.reviews = reviewsModel(sequelize, DataTypes);
 
-
-// sequelize property
-db.sequelize.sync({ force: true });
+// instantiate sequelize db
+db.sequelize.sync({ force: false });
 
 module.exports = db;

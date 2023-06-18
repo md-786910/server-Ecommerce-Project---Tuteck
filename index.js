@@ -21,6 +21,7 @@ require("./models");
 const productRoutes = require("./routes/product.routes");
 const userRoutes = require("./routes/user.routes");
 const orderRoutes = require("./routes/order.routes");
+const cartRoutes = require("./routes/cart.routes");
 
 const productRouter = require("./api/productApi");
 // Model
@@ -38,12 +39,12 @@ app.use(cors({ origin: true }));
 app.use(morgan("dev"));
 
 //configure apicache
-let cache = apicache.middleware;
+const cache = apicache.middleware;
 
 // server static files
 
 //caching all routes for 5 minutes
-app.use(cache("5 minutes"));
+// app.use(cache("5 minutes"));
 
 // Routing
 app.get("/", (req, res) => {
@@ -51,14 +52,17 @@ app.get("/", (req, res) => {
 });
 
 // product
-app.use("/api", productRoutes);
+// app.use("/api/product", productRoutes);
 
 // user
-app.use("/api", userRoutes);
+app.use("/api/user", userRoutes);
 
-app.use("/api", orderRoutes);
 // for product listing
-app.use("/api/product", productRouter);
+app.use("/api/product", cache("5 minutes"), productRouter);
+
+// product - orders + cart
+app.use("/api/order", orderRoutes);
+app.use("/api/cart", cartRoutes);
 
 app.listen(PORT, () => {
   console.log("app is running " + PORT);
