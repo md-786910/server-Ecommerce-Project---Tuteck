@@ -52,7 +52,6 @@ app.get("/", (req, res) => {
 });
 
 // product
-// app.use("/api/product", productRoutes);
 
 // user
 app.use("/api/user", userRoutes);
