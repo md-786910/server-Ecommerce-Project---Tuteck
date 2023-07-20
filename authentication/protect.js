@@ -14,7 +14,7 @@ const protect = async (req, res, next) => {
 
   try {
     const payload = await verifyToken(token);
-    const user = await Model.findById(payload.id);
+    const user = await Model.findById(payload._id);
     //   .populate({ path: "subjects", select: "-addedBy -__v" })
     //   .populate({ path: "languages", select: "name" })
     //   .select("-password -identities")
