@@ -3,13 +3,14 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const { config } = require("dotenv");
-const { protect } = require("./authentication/protect");
 const apicache = require("apicache");
 
 const app = express();
-
 // config
-config();
+config({ path: "./config.env" });
+
+// protect
+const { protect } = require("./authentication/protect");
 
 // PORT
 const PORT = process.env.PORT || 5000;

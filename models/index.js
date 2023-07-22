@@ -12,20 +12,16 @@ const cartModel = require("./cart.product.model");
 // const HOST_NAME = process.env.HOST_NAME;
 
 const DB_URL = process.env.DB_URL;
-
-const sequelize = new Sequelize(
-  "postgres://tuteckecom_user:7Ac8ShcoSw8ngOyn7dTcpsWY4sbVQkMZ@dpg-ci5av7lph6eh6mota11g-a.oregon-postgres.render.com/tuteckecom",
-  {
-    dialect: "postgres",
-    logging: false,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
+const sequelize = new Sequelize(DB_URL, {
+  dialect: "postgres",
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
     },
-  }
-);
+  },
+});
 
 // const sequelize = new Sequelize(SQL_DB, SQL_USERNAME, SQL_PASSWORD, {
 //   host: HOST_NAME,
@@ -77,6 +73,6 @@ db.reviews = reviewsModel(sequelize, DataTypes);
 // db.reviews = reviewsModel(sequelize, DataTypes);
 
 // instantiate sequelize db
-db.sequelize.sync({ force: true });
+// db.sequelize.sync({ force: true });
 
 module.exports = db;
