@@ -6,6 +6,7 @@ yarn-error.log
 yarn.lock
 # Ignore node_modules folder
 node_modules
+.history
 
 # Ignore all text files
 *.txt
