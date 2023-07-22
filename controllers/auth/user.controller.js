@@ -5,22 +5,22 @@ const randomstring = require("randomstring");
 
 // ---------------Register---------------
 const Register = async (req, res) => {
-  const Model = req.model;
-  const { name, email, password, confirm_password } = req.body;
-
-  if (!email || !password || !name || !confirm_password) {
-    return res.status(400).json({
-      status: false,
-      message: "Required fields missing",
-    });
-  }
-  if (password !== confirm_password) {
-    return res.status(400).json({
-      status: false,
-      message: "passoword does not matched",
-    });
-  }
   try {
+    const Model = req.model;
+    const { name, email, password, confirm_password } = req.body;
+
+    if (!email || !password || !name || !confirm_password) {
+      return res.status(400).json({
+        status: false,
+        message: "Required fields missing",
+      });
+    }
+    if (password !== confirm_password) {
+      return res.status(400).json({
+        status: false,
+        message: "passoword does not matched",
+      });
+    }
     const exitEmail = await Model.findOne({
       where: {
         email: email,
@@ -41,26 +41,12 @@ const Register = async (req, res) => {
         "Register successfully",
         "Welcome to our website"
       );
-      const token = generateToken(user);
+      // const token = generateToken(user);
 
-      // const cart = await Cart.create({});
-      // cart.userID = user._id;
-      // await cart.save();
-      // user.cartID = cart._id;
-      // await user.save();
-      return res
-        .status(201)
-        .json({ status: true, token: token, data: user, info: info });
+      return res.status(201).json({ status: true, data: user, info: info });
     }
   } catch (e) {
-    if (e.toString().includes("E11000 duplicate key error collection")) {
-      return res.status(400).send({
-        status: false,
-        message: "Already Exists",
-      });
-    }
-
-    return res.status(400).send({ message: e.message, status: false });
+    res.status(400).send({ message: e.message, status: false });
   }
 };
 
@@ -73,20 +59,25 @@ const GetRegister = async (req, res) => {
 // ---------------Login---------------
 
 const Login = async (req, res) => {
-  const Model = req.model;
-  const { email, password } = req.body;
-  console.log(req.body);
-  if (!email || !password)
-    return res.status(400).json({ message: "Email and password required" });
-  const user = await Model.findOne({
-    where: {
-      email: email,
-    },
-  });
-  if (!user) {
-    return res.status(400).send({ message: "Invalid Email or Password" });
-  }
   try {
+    const Model = req.model;
+    const { email, password } = req.body;
+    console.log(req.body);
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
+    const user = await Model.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .send({ message: "Invalid credential create new account" });
+    }
+
     // match password with db password
     const passwordHash = user.password;
     const match = await bcrypt.compare(password, passwordHash);

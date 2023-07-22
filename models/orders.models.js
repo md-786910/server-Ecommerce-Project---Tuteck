@@ -4,54 +4,68 @@ module.exports = (sequelize, DataTypes) => {
     {
       orderId: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+        allowNull: true,
       },
       userId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      productId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      price: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+      },
+      userOrder: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
+        defaultValue: [],
+      },
+
+      totalPrice: {
+        type: DataTypes.INTEGER,
         defaultValue: 0,
       },
-      qty: {
+      totalQty: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         defaultValue: 0,
       },
-      tax: {
+      GST: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         defaultValue: 0,
       },
       priceGST: {
         type: DataTypes.FLOAT,
-        allowNull: false,
         defaultValue: 0,
+      },
+      razorpay_order_id: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      razorpay_payment_id: {
+        type: DataTypes.STRING,
+        defaultValue: "",
       },
       status: {
         type: DataTypes.STRING,
-        allowNull: false,
-        enum: [
-          "PENDING",
-          "PAID",
-          "PROCESSING",
-          "DISPATCHED",
-          "SHIPPING",
-          "DELIVERED",
-        ],
+        // enum: [
+        //   "PENDING",
+        //   "PAID",
+        //   "PROCESSING",
+        //   "DISPATCHED",
+        //   "SHIPPING",
+        //   "DELIVERED",
+        // ],
+        validate: {
+          isIn: [
+            [
+              "PENDING",
+              "PAID",
+              "PROCESSING",
+              "DISPATCHED",
+              "SHIPPING",
+              "DELIVERED",
+            ],
+          ],
+        },
         defaultValue: "PENDING",
       },
     },
     {
       timestamps: true,
+      strict: false,
     }
   );
   return Order;

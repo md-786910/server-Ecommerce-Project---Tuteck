@@ -3,14 +3,30 @@ module.exports = (sequelize, DataTypes) => {
     "Cart",
     {
       userId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
       productId: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      image: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      information: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
       price: {
         type: DataTypes.INTEGER,
         allowNull: false,
