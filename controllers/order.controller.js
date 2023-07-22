@@ -4,13 +4,16 @@ const Razorpay = require("razorpay");
 const db = require("../models");
 const Order = db.order;
 
+const keyId = process.env.RAZORPAY_KEY_ID;
+const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
 const config = {
-  key_id: "rzp_test_MgNn5wEsqPADa4",
-  key_secret: "2e0TiXHTcHs252qDrcXUHOaQ",
+  key_id: keyId,
+  key_secret: keySecret,
 };
 const instance = new Razorpay({
-  key_id: "rzp_test_MgNn5wEsqPADa4",
-  key_secret: "2e0TiXHTcHs252qDrcXUHOaQ",
+  key_id: keyId,
+  key_secret: keySecret,
 });
 
 //get all orders of loged in users
