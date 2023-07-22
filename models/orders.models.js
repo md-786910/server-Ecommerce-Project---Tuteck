@@ -1,73 +1,72 @@
 module.exports = (sequelize, DataTypes) => {
-    const Order = sequelize.define(
-      "Order",
-      {
-        
-        orderNumber: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-          },
-          userId:{
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-          },
-          productId:{
-            type: DataTypes.STRING,
-            allowNull: false,
-         },
-         itemsPrice: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 0,
-          },
-          taxPrice: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 0,
-          },
-          totalPrice: {
-            type: DataTypes.FLOAT,
-            allowNull: false,
-            defaultValue: 0,
-          },
+  const Order = sequelize.define(
+    "Order",
+    {
+      orderId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+      },
+      userOrder: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
+        defaultValue: [],
+      },
 
-          shippingAdress:{
-           
-            type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: "Burdwan",
-             
-         },
-          orderStatus:{
-            type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: "Processing",
-          },
-          deliveredAt:{
-            type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: "Processing",
-          },
-          paidAt: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: "Processing",
-          },
-      
-         },
-  
-      // reviews , user
-      {
-        timestamps: true,
-      }
-    );
-    return Order;
-  };
-  
-  
-  
-  
-  
-  
+      totalPrice: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      totalQty: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      GST: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      priceGST: {
+        type: DataTypes.FLOAT,
+        defaultValue: 0,
+      },
+      razorpay_order_id: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      razorpay_payment_id: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      status: {
+        type: DataTypes.STRING,
+        // enum: [
+        //   "PENDING",
+        //   "PAID",
+        //   "PROCESSING",
+        //   "DISPATCHED",
+        //   "SHIPPING",
+        //   "DELIVERED",
+        // ],
+        validate: {
+          isIn: [
+            [
+              "PENDING",
+              "PAID",
+              "PROCESSING",
+              "DISPATCHED",
+              "SHIPPING",
+              "DELIVERED",
+            ],
+          ],
+        },
+        defaultValue: "PENDING",
+      },
+    },
+    {
+      timestamps: true,
+      strict: false,
+    }
+  );
+  return Order;
+};

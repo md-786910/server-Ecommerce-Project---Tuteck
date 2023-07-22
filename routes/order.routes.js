@@ -1,21 +1,29 @@
 const express = require("express");
 const router = express.Router();
 const {
-    getAllOrders,
-    CreateNewOrder,
-    getOrderById,
-    updateOrder,
-    deleteOrder
+  getAllOrders,
+  CreateNewOrder,
+  getOrderById,
+  updateOrder,
+  deleteOrder,
+  checkoutOrder,
+  paymentCreateOrder,
 } = require("../controllers/order.controller");
 
 //done
-router.route("/order/new").post(CreateNewOrder);
+router.route("/create").post(CreateNewOrder);
 
 //DONE
-router.route("/orders").get(getAllOrders);
+router.route("/AllOrder").get(getAllOrders);
 //DONE
-router.route("/order/:id").get(getOrderById)
-  .put(updateOrder).delete(deleteOrder);
+router
+  .route("/actionOrder/:id")
+  .get(getOrderById)
+  .put(updateOrder)
+  .delete(deleteOrder);
 
+// -----------------Payment|| Checkout-----------------------
+router.get("/capture/:orderId", checkoutOrder);
+router.post("/capture/:paymentId", paymentCreateOrder);
 
 module.exports = router;

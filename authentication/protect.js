@@ -1,7 +1,9 @@
 const { verifyToken } = require("./jwt");
+const db = require("../models");
 
 const protect = async (req, res, next) => {
   const Model = req.model;
+  // const Model = db.user;
 
   if (!req.headers.authorization) {
     return res.status(401).end();
@@ -14,12 +16,8 @@ const protect = async (req, res, next) => {
 
   try {
     const payload = await verifyToken(token);
-    const user = await Model.findById(payload.id);
-    //   .populate({ path: "subjects", select: "-addedBy -__v" })
-    //   .populate({ path: "languages", select: "name" })
-    //   .select("-password -identities")
-    //   .lean()
-    //   .exec();
+
+    const user = await Model.findByPk(payload.id);
 
     req.user = user;
 

@@ -23,10 +23,11 @@ module.exports = (sequelize, DataTypes) => {
 
       mobileNo: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
           is: /^[0-9]{10}$/i,
         },
+        defaultValue: "7519064082",
       },
       //   tokens: [
       //     {
