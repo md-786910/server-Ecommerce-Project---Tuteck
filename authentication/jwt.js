@@ -2,13 +2,9 @@ const jwt = require("jsonwebtoken");
 const { SECRETS } = require("../config");
 
 const generateToken = (user) => {
-  return jwt.sign(
-    { id: user._id },
-    "myjwtSecretrandomTransportExpirationFire",
-    {
-      expiresIn: SECRETS.jwtExp,
-    }
-  );
+  return jwt.sign({ id: user.id }, "myjwtSecretrandomTransportExpirationFire", {
+    expiresIn: SECRETS.jwtExp,
+  });
 };
 
 const verifyToken = (token) =>

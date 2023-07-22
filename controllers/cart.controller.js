@@ -1,19 +1,16 @@
 const db = require("../models");
-const { Op } = require("sequelize");
-const Product = db.product;
-const Review = db.reviews;
-const Order = db.order;
+const Cart = db.cart;
 
 //get all orders of loged in users
 
 // Get all orders by admin
-const getAllOrders = async (req, res) => {
+const getAllCart = async (req, res) => {
   try {
-    const orders = await Order.findAll();
+    const getAllCart = await Cart.findAll({ where: { userId: req.user.id } });
     res.status(201).json({
       success: true,
       message: "fetch all Order successfully !",
-      orders: orders,
+      cart: getAllCart,
     });
   } catch (error) {
     console.error("Error retrieving orders:", error);
@@ -24,26 +21,49 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-//create  a new order
-const CreateNewOrder = async (req, res) => {
+//create  a new cart
+const CreateNewCart = async (req, res) => {
   try {
-    //orderNumber ,userId , productId
-    const { orderNumber, userId, productId, itemsPrice, totalPrice } = req.body;
-    const order = await Order.create({
-      orderNumber,
-      userId,
-      productId,
-      itemsPrice,
-      totalPrice,
+    const userId = req.user.id;
+    const { productId, name, image, description, information, price, qty } =
+      req.body;
+
+    //check if product is already in cart
+    const existProduct = await Cart.findOne({
+      where: {
+        userId,
+        productId,
+      },
     });
-    res.status(201).json({
-      success: true,
-      message: "Order Placed successfully !",
-      order: order,
-    });
+    if (existProduct) {
+      // update qty only
+      // existProduct.qty += 1;
+      // existProduct.save();
+      return res.status(201).json({
+        success: true,
+        message: "product already exist!",
+      });
+    } else {
+      const cartNew = await Cart.create({
+        userId,
+        productId,
+        name,
+        image,
+        description,
+        information,
+        price,
+        qty,
+      });
+
+      return res.status(201).json({
+        success: true,
+        message: "cart created successfully !",
+        cart: cartNew,
+      });
+    }
   } catch (error) {
-    console.error("Error creating order:", error);
-    res.status(501).json({
+    console.error("Error creating cart:", error);
+    return res.status(501).json({
       success: false,
       message: error.message,
     });
@@ -51,16 +71,18 @@ const CreateNewOrder = async (req, res) => {
 };
 
 //get order by id
-const getOrderById = async (req, res) => {
+const getCartById = async (req, res) => {
   try {
-    const order = await Order.findByPk(req.params.id);
-    if (order) {
+    const cart = await Cart.findOne({
+      where: { userId: req.user.id, id: req.params.id },
+    });
+    if (cart) {
       res.status(201).json({
         success: true,
-        order: order,
+        cart: cart,
       });
     } else {
-      res.status(404).json({ error: "Order not found" });
+      res.status(404).json({ error: "cart not found" });
     }
   } catch (error) {
     console.error("Error retrieving order:", error);
@@ -73,30 +95,31 @@ const getOrderById = async (req, res) => {
 
 //update a order status by admin
 
-const updateOrder = async (req, res) => {
+const updateCartById = async (req, res) => {
   try {
-    const order = await Order.findByPk(req.params.id);
-    if (order) {
-      const { orderNumber, userId, productId, itemsPrice, totalPrice } =
-        req.body;
+    const cartData = await Cart.findOne({
+      where: {
+        userId: req.user.id,
+        id: req.params.id,
+      },
+    });
 
-      await order.update({
-        orderNumber,
-        userId,
-        productId,
-        itemsPrice,
-        totalPrice,
-      });
+    if (cartData) {
+      const { qty } = req.body;
+
+      cartData.qty += qty;
+      await cartData.save();
+
       res.status(201).json({
         success: true,
-        message: "Order Updated !",
-        order: order,
+        message: "cart Updated !",
+        order: cartData,
       });
     } else {
-      res.status(404).json({ error: "Order not found" });
+      res.status(404).json({ error: "cart not found" });
     }
   } catch (error) {
-    console.error("Error updating order:", error);
+    console.error("Error updating cart:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -105,20 +128,25 @@ const updateOrder = async (req, res) => {
 };
 
 //delete Order by admin
-const deleteOrder = async (req, res) => {
+const deleteCartById = async (req, res) => {
   try {
-    const order = await Order.findByPk(req.params.id);
-    if (order) {
-      await order.destroy();
+    const cart = await Cart.findOne({
+      where: {
+        userId: req.user.id,
+        id: req.params.id,
+      },
+    });
+    if (cart) {
+      await cart.destroy();
       res.status(201).json({
         success: true,
-        message: "Order Deleted !",
+        message: "cart Deleted !",
       });
     } else {
-      res.status(404).json({ error: "Order not found" });
+      res.status(404).json({ error: "cart not found" });
     }
   } catch (error) {
-    console.error("Error deleting order:", error);
+    console.error("Error deleting cart:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -126,9 +154,9 @@ const deleteOrder = async (req, res) => {
   }
 };
 module.exports = {
-  getAllOrders,
-  CreateNewOrder,
-  getOrderById,
-  updateOrder,
-  deleteOrder,
+  getAllCart,
+  CreateNewCart,
+  getCartById,
+  updateCartById,
+  deleteCartById,
 };

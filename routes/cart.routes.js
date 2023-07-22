@@ -1,23 +1,24 @@
 const express = require("express");
 const router = express.Router();
+
 const {
-  getAllOrders,
-  CreateNewOrder,
-  getOrderById,
-  updateOrder,
-  deleteOrder,
-} = require("../controllers/order.controller");
+  CreateNewCart,
+  getAllCart,
+  getCartById,
+  updateCartById,
+  deleteCartById,
+} = require("../controllers/cart.controller");
 
 //done
-router.route("/order/new").post(CreateNewOrder);
+router.route("/add").post(CreateNewCart);
 
 //DONE
-router.route("/orders").get(getAllOrders);
+router.route("/getAll").get(getAllCart);
 //DONE
 router
-  .route("/order/:id")
-  .get(getOrderById)
-  .put(updateOrder)
-  .delete(deleteOrder);
+  .route("/cartAction/:id")
+  .get(getCartById)
+  .put(updateCartById)
+  .delete(deleteCartById);
 
 module.exports = router;

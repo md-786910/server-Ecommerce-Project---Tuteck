@@ -22,8 +22,10 @@ const productRoutes = require("./routes/product.routes");
 const userRoutes = require("./routes/user.routes");
 const orderRoutes = require("./routes/order.routes");
 const cartRoutes = require("./routes/cart.routes");
+const productGetRoutes = require("./routes/product.routes");
 
 const productRouter = require("./api/productApi");
+
 // Model
 const db = require("./models");
 
@@ -38,44 +40,40 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: true }));
 
 app.use((req, res, next) => {
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-      );
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-      if (req.method === "OPTIONS") {
-        return res.sendStatus(200);
-      }
-      next();
-    });
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 app.use(morgan("dev"));
 
 //configure apicache
 const cache = apicache.middleware;
 
-// server static files
-
-//caching all routes for 5 minutes
-// app.use(cache("5 minutes"));
-
 // Routing
 app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-// product
-
 // user
 app.use("/api/user", userRoutes);
 
-// for product listing
+// for product listing  -  AMAZON Scrapper api
 app.use("/api/product", cache("5 minutes"), productRouter);
 
 // product - orders + cart
-app.use("/api/order", orderRoutes);
-app.use("/api/cart", cartRoutes);
+app.use("/api/order", userModel, protect, orderRoutes);
+app.use("/api/cart", userModel, protect, cartRoutes);
+
+// product management by admin route
+app.use("/api/prod/admin", productGetRoutes);
 
 app.listen(PORT, () => {
   console.log("app is running " + PORT);

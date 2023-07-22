@@ -12,31 +12,31 @@ const {
   getAllReviews,
   updateProductReviews,
   deleteProductReviews,
-
-
-
-
 } = require("../controllers/product.controller");
 
 //done
-router.route("/product/new")
-  .get(getProduct).post(addProduct);
+router.route("/addProduct").post(addProduct);
 
 //DONE
 router.route("/products").get(SearchFilterProduct);
 //DONE
-router.route("/product/:id").get(getOneProduct)
-  .put(updateProduct).delete(deleteProduct);
+router
+  .route("/product/:id")
+  .get(getOneProduct)
+  .put(updateProduct)
+  .delete(deleteProduct);
 
 //DONE
-router.route('/admin/products').get(getProductsbyAdmin);
+router.route("/admin/products").get(getProductsbyAdmin);
 
 //DONE
 router.route("/review/new").post(CreateReviews);
 //DONE
-router.route('/reviews').get(getAllReviews);
+router.route("/reviews").get(getAllReviews);
 //DONE
-router.route("/review/:id").
-  put(updateProductReviews).delete(deleteProductReviews);
+router
+  .route("/review/:id")
+  .put(updateProductReviews)
+  .delete(deleteProductReviews);
 
 module.exports = router;
