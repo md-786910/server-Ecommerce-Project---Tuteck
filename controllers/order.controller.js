@@ -176,7 +176,7 @@ const checkoutOrder = async (req, res) => {
 
     const options = {
       amount: priceGST * 100,
-      currency: "INR",
+      currency: "USD",
       receipt: `receipt${id}`,
       payment_capture: 0,
     };
