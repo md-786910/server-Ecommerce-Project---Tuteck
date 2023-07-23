@@ -2,7 +2,9 @@ const uuid = require("uuid").v4;
 const Razorpay = require("razorpay");
 
 const db = require("../models");
+const axios = require("axios");
 const Order = db.order;
+const Cart = db.cart;
 
 const keyId = process.env.RAZORPAY_KEY_ID;
 const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -71,13 +73,17 @@ const CreateNewOrder = async (req, res) => {
       status: "PENDING",
     });
 
+    Cart.destroy({
+      where: { userId: req.user.id },
+      truncate: true,
+    });
+
     res.status(201).json({
       success: true,
       message: "Order created successfully !",
       order: orderCreate,
     });
   } catch (error) {
-    console.log("error", error);
     res.status(501).json({
       success: false,
       message: error.message,
@@ -165,28 +171,34 @@ const deleteOrder = async (req, res) => {
 const checkoutOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
+    const address = req.body.address;
+    console.log("address", address);
+
     const orderProduct = await Order.findOne({
       where: {
         userId: req.user.id,
         orderId: orderId,
       },
     });
+    orderProduct.address = address;
+    await orderProduct.save();
 
     const { priceGST, id } = orderProduct;
 
     const options = {
-      amount: priceGST * 100,
+      amount: parseInt(priceGST) * 100,
       currency: "USD",
       receipt: `receipt${id}`,
       payment_capture: 0,
     };
     instance.orders.create(options, async function (err, order) {
       if (err) {
-        // console.log(err);
+        console.log("err order", err);
         return res.status(500).json({
           message: "Something Went Wrong",
         });
       }
+      console.log("suc order", order);
       return res.status(200).json(order);
     });
   } catch (err) {
@@ -201,21 +213,27 @@ const checkoutOrder = async (req, res) => {
 const paymentCreateOrder = async (req, res) => {
   try {
     const { response } = req.body;
+    console.log("response", response);
 
     const { orderId } = req.query;
-    const orderProduct = await Orders.findOne({
+    const orderProduct = await Order.findOne({
       where: {
         userId: req.user.id,
         orderId: orderId,
       },
     });
+
+    console.log("orderProduct", orderProduct);
+
     const { priceGST } = orderProduct;
 
     const url = `https://${config.key_id}:${config.key_secret}@api.razorpay.com/v1/payments/${req.params.paymentId}/capture`;
     const { data: respOrder } = await axios.post(url, {
       amount: priceGST * 100,
-      currency: "INR",
+      currency: "USD",
     });
+
+    console.log("respOrder", respOrder);
 
     if (respOrder.status === "captured") {
       orderProduct.status = "PAID";
