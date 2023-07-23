@@ -87,8 +87,7 @@ const Login = async (req, res) => {
     const token = generateToken(user);
     return res.status(201).send({ status: true, data: user, token: token });
   } catch (e) {
-    console.log(e);
-    return res.status(401).send({ status: false, message: "Not Authorized" });
+    res.status(401).send({ status: false, message: "Register account!" });
   }
 };
 
