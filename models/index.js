@@ -4,6 +4,7 @@ const userModel = require("./users.models");
 const reviewsModel = require("./reviews.product.models");
 const orderModel = require("./orders.models");
 const cartModel = require("./cart.product.model");
+const addressModel = require("./address.model");
 
 // # creating connection
 // const SQL_PASSWORD = process.env.SQL_PASSWORD;
@@ -45,6 +46,16 @@ db.sequelize = sequelize;
 // user related db
 db.user = userModel(sequelize, DataTypes);
 
+// address relation
+db.address = addressModel(sequelize, DataTypes);
+db.user.hasMany(db.address, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+});
+db.address.belongsTo(db.user, {
+  foreignKey: "userId",
+});
+
 // product related db
 db.product = productModel(sequelize, DataTypes);
 db.cart = cartModel(sequelize, DataTypes);
@@ -73,6 +84,7 @@ db.reviews = reviewsModel(sequelize, DataTypes);
 // db.reviews = reviewsModel(sequelize, DataTypes);
 
 // instantiate sequelize db
+
 db.sequelize.sync({ force: true });
 
 module.exports = db;

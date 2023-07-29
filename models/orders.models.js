@@ -13,7 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ARRAY(DataTypes.JSON),
         defaultValue: [],
       },
-
+      address: {
+        type: DataTypes.JSON,
+      },
       totalPrice: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
@@ -35,6 +37,26 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "",
       },
       razorpay_payment_id: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      order_id: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      method: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      vpa: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      contact: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
+      upi_transaction_id: {
         type: DataTypes.STRING,
         defaultValue: "",
       },

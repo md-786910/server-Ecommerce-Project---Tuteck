@@ -24,6 +24,7 @@ const userRoutes = require("./routes/user.routes");
 const orderRoutes = require("./routes/order.routes");
 const cartRoutes = require("./routes/cart.routes");
 const productGetRoutes = require("./routes/product.routes");
+const addressGetRoutes = require("./routes/address.routes");
 
 const productRouter = require("./api/productApi");
 
@@ -71,6 +72,7 @@ app.use("/api/product", cache("5 minutes"), productRouter);
 
 // product - orders + cart
 app.use("/api/order", userModel, protect, orderRoutes);
+app.use("/api/address", userModel, protect, addressGetRoutes);
 app.use("/api/cart", userModel, protect, cartRoutes);
 
 // product management by admin route

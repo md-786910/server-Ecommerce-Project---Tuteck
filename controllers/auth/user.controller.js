@@ -56,6 +56,7 @@ const GetRegister = async (req, res) => {
 
   res.json(data);
 };
+
 // ---------------Login---------------
 
 const Login = async (req, res) => {
@@ -87,7 +88,7 @@ const Login = async (req, res) => {
     const token = generateToken(user);
     return res.status(201).send({ status: true, data: user, token: token });
   } catch (e) {
-    res.status(401).send({ status: false, message: "Register account!" });
+    res.status(401).send({ status: false, message: e.message });
   }
 };
 
@@ -130,51 +131,57 @@ const ForgotPassword = async (req, res) => {
     }
   } catch (e) {
     console.log(e);
-    return res.status(401).send({ message: "Not Authorized", status: false });
+    return res.status(401).send({ message: e.message, status: false });
   }
 };
 
 // ---------------ResetPassword---------------
 
 const ResetPassword = async (req, res) => {
-  const Model = req.model;
-  const { id, password, confirm_password } = req.body;
-
-  if (password !== confirm_password) {
-    res
-      .status(401)
-      .json({ message: "password does not matched", status: false });
-  }
-  const user = await Model.findOne({
-    where: { id: id },
-  });
-
-  if (!user) {
-    return res.status(400).send({ message: "user does'nt exist" });
-  }
-
   try {
-    const genPassword = await bcrypt.hash(password, 10);
-    user.password = genPassword;
-    await user.save();
+    const Model = req.model;
+    const { email, currentPassword, newPassword } = req.body;
 
-    const sendOrNot = sendMail(
-      user.email,
-      "Password have been successfully changed",
-      `
-         <p>you can now login</b></p>
+    const user = await Model.findOne({
+      where: { email: email },
+    });
+
+    if (!user) {
+      return res.status(400).send({ message: "user does'nt exist" });
+    }
+
+    // check password
+    const passwordCheck = await bcrypt.compare(currentPassword, user.password);
+
+    if (passwordCheck) {
+      const genPassword = await bcrypt.hash(newPassword, 10);
+      user.password = genPassword;
+      await user.save();
+      const sendOrNot = sendMail(
+        user.email,
+        "Password have been successfully reset",
         `
-    );
-    if (sendOrNot) {
-      return res
-        .status(201)
-        .send({ status: true, message: "successfully send message" });
+           <p>you can now login</b></p>
+           <p>Your Password : ${newPassword}</b></p>
+          `
+      );
+      if (sendOrNot) {
+        return res
+          .status(201)
+          .send({ status: true, message: "successfully send message" });
+      } else {
+        return res
+          .status(400)
+          .send({ message: "Not Send Mail", status: false });
+      }
     } else {
-      return res.status(400).send({ message: "Not Send Mail", status: false });
+      return res
+        .status(400)
+        .send({ message: "Your password does not exist", status: false });
     }
   } catch (e) {
     console.log(e);
-    return res.status(401).send({ message: "Not Authorized", status: false });
+    return res.status(401).send({ message: e.message, status: false });
   }
 };
 
