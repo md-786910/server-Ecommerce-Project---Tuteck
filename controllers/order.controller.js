@@ -5,6 +5,7 @@ const db = require("../models");
 const axios = require("axios");
 const Order = db.order;
 const Cart = db.cart;
+const Address = db.address;
 
 const keyId = process.env.RAZORPAY_KEY_ID;
 const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -171,8 +172,12 @@ const deleteOrder = async (req, res) => {
 const checkoutOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const address = req.body.address;
-    console.log("address", address);
+
+    // const address = await Address.findOne({
+    //   where: {
+    //     userId: req.user.id,
+    //   },
+    // });
 
     const orderProduct = await Order.findOne({
       where: {
@@ -180,30 +185,28 @@ const checkoutOrder = async (req, res) => {
         orderId: orderId,
       },
     });
-    orderProduct.address = address;
+    // orderProduct.address = address.address;
     await orderProduct.save();
 
     const { priceGST, id } = orderProduct;
 
     const options = {
-      amount: parseInt(priceGST) * 100,
-      currency: "USD",
+      amount: priceGST * 100,
+      currency: "INR",
       receipt: `receipt${id}`,
       payment_capture: 0,
     };
     instance.orders.create(options, async function (err, order) {
       if (err) {
-        console.log("err order", err);
         return res.status(500).json({
           message: "Something Went Wrong",
         });
       }
-      console.log("suc order", order);
-      return res.status(200).json(order);
+      res.status(200).json(order);
     });
   } catch (err) {
     console.log("err", err);
-    return res.status(500).json({
+    res.status(500).json({
       message: "Something Went Wrong",
     });
   }
@@ -212,8 +215,12 @@ const checkoutOrder = async (req, res) => {
 //2. pay order payment
 const paymentCreateOrder = async (req, res) => {
   try {
+    const address = await Address.findOne({
+      where: {
+        userId: req.user.id,
+      },
+    });
     const { response } = req.body;
-    console.log("response", response);
 
     const { orderId } = req.query;
     const orderProduct = await Order.findOne({
@@ -223,35 +230,38 @@ const paymentCreateOrder = async (req, res) => {
       },
     });
 
-    console.log("orderProduct", orderProduct);
-
     const { priceGST } = orderProduct;
 
     const url = `https://${config.key_id}:${config.key_secret}@api.razorpay.com/v1/payments/${req.params.paymentId}/capture`;
     const { data: respOrder } = await axios.post(url, {
       amount: priceGST * 100,
-      currency: "USD",
+      currency: "INR",
     });
-
-    console.log("respOrder", respOrder);
 
     if (respOrder.status === "captured") {
       orderProduct.status = "PAID";
-
+      orderProduct.address = address.address;
       orderProduct.razorpay_order_id = response.razorpay_order_id;
       orderProduct.razorpay_payment_id = response.razorpay_payment_id;
+
+      orderProduct.order_id = respOrder.order_id;
+      orderProduct.method = respOrder.method;
+      orderProduct.vpa = respOrder.vpa;
+      orderProduct.contact = respOrder.contact;
+      orderProduct.upi_transaction_id =
+        respOrder.acquirer_data.upi_transaction_id;
 
       await orderProduct.save();
       res.send(respOrder);
     } else {
-      return res.status(500).send({
+      res.status(500).send({
         message: "Payment Failed",
       });
     }
   } catch (err) {
     console.log("error", err);
-    return res.status(500).send({
-      message: "Something Went Wrong",
+    res.status(500).send({
+      message: "Something Went Wrong" + err,
     });
   }
 };

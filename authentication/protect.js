@@ -16,7 +16,6 @@ const protect = async (req, res, next) => {
 
   try {
     const payload = await verifyToken(token);
-
     const user = await Model.findByPk(payload.id);
 
     req.user = user;

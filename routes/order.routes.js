@@ -23,7 +23,7 @@ router
   .delete(deleteOrder);
 
 // -----------------Payment|| Checkout-----------------------
-router.post("/create/:orderId", checkoutOrder);
+router.get("/create/:orderId", checkoutOrder);
 router.post("/capture/:paymentId", paymentCreateOrder);
 
 module.exports = router;

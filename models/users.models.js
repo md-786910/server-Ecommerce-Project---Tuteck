@@ -29,12 +29,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         defaultValue: "7519064082",
       },
-      //   tokens: [
-      //     {
-      //       type: DataTypes.STRING,
-      //       allowNull: true,
-      //     },
-      //   ],
+      address: {
+        type: DataTypes.JSON,
+      },
       image: {
         type: DataTypes.STRING,
         allowNull: true,
