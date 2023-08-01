@@ -4,6 +4,9 @@ const Address = db.address;
 
 const userAddress = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const addressExist = await Address.findOne({
       where: { userId: req.user.id },
     });
@@ -27,6 +30,9 @@ const userAddress = async (req, res) => {
 };
 const getUserAddress = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const user = await Address.findOne({
       where: { userId: req.user.id },
     });

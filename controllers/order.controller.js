@@ -24,6 +24,9 @@ const instance = new Razorpay({
 // Get all orders by admin
 const getAllOrders = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const userId = req.user.id;
 
     const orders = await Order.findAll({
@@ -49,6 +52,9 @@ const getAllOrders = async (req, res) => {
 //create  a new order
 const CreateNewOrder = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const userId = req.user.id;
     const newOrder = req.body.order;
     const orderId = uuid();
@@ -95,6 +101,9 @@ const CreateNewOrder = async (req, res) => {
 //get order by id
 const getOrderById = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const order = await Order.findOne({
       where: { userId: req.user.id, orderId: req.params.id },
     });
@@ -118,6 +127,10 @@ const getOrderById = async (req, res) => {
 //update a order status by admin
 const updateOrder = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
+
     const order = await Order.findOne({
       where: { userId: req.user.id, orderId: req.params.id },
     });
@@ -144,6 +157,10 @@ const updateOrder = async (req, res) => {
 //delete Order by admin
 const deleteOrder = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
+
     const order = await Order.findOne({
       where: { userId: req.user.id, orderId: req.params.id },
     });
@@ -171,6 +188,9 @@ const deleteOrder = async (req, res) => {
 // 1. check proper validation and initiate payment
 const checkoutOrder = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const { orderId } = req.params;
 
     // const address = await Address.findOne({
@@ -215,6 +235,9 @@ const checkoutOrder = async (req, res) => {
 //2. pay order payment
 const paymentCreateOrder = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const address = await Address.findOne({
       where: {
         userId: req.user.id,
