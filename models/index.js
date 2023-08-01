@@ -85,6 +85,6 @@ db.reviews = reviewsModel(sequelize, DataTypes);
 
 // instantiate sequelize db
 
-db.sequelize.sync({ force: true });
+// db.sequelize.sync({ force: true });
 
 module.exports = db;
