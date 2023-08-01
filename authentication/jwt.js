@@ -13,7 +13,8 @@ const verifyToken = (token) =>
       token,
       "myjwtSecretrandomTransportExpirationFire",
       (err, payload) => {
-        if (err) return reject(err);
+        if (err)
+          return res.status(401).json({ message: "user not authenticated" });
         resolve(payload);
       }
     );

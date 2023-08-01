@@ -6,6 +6,9 @@ const Cart = db.cart;
 // Get all orders by admin
 const getAllCart = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const getAllCart = await Cart.findAll({ where: { userId: req.user.id } });
     res.status(201).json({
       success: true,
@@ -24,6 +27,9 @@ const getAllCart = async (req, res) => {
 //create  a new cart
 const CreateNewCart = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const userId = req.user.id;
     const { productId, name, image, description, information, price, qty } =
       req.body;
@@ -73,6 +79,10 @@ const CreateNewCart = async (req, res) => {
 //get order by id
 const getCartById = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
+
     const cart = await Cart.findOne({
       where: { userId: req.user.id, id: req.params.id },
     });
@@ -97,6 +107,9 @@ const getCartById = async (req, res) => {
 
 const updateCartById = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const cartData = await Cart.findOne({
       where: {
         userId: req.user.id,
@@ -130,6 +143,9 @@ const updateCartById = async (req, res) => {
 //delete Order by admin
 const deleteCartById = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: "user not authorized" });
+    }
     const cart = await Cart.findOne({
       where: {
         userId: req.user.id,
