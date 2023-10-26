@@ -48,6 +48,7 @@ db.user = userModel(sequelize, DataTypes);
 
 // address relation
 db.address = addressModel(sequelize, DataTypes);
+//chnage
 db.user.hasMany(db.address, {
   foreignKey: "userId",
   onDelete: "CASCADE",
@@ -55,12 +56,13 @@ db.user.hasMany(db.address, {
 db.address.belongsTo(db.user, {
   foreignKey: "userId",
 });
-
+//change
 // product related db
 db.product = productModel(sequelize, DataTypes);
 db.cart = cartModel(sequelize, DataTypes);
 
 // Define the one-to-one association
+//chnage
 db.user.hasMany(db.cart, {
   foreignKey: "userId",
   onDelete: "CASCADE",
@@ -69,9 +71,11 @@ db.cart.belongsTo(db.user, {
   foreignKey: "userId",
 });
 
+//chnage
 db.order = orderModel(sequelize, DataTypes);
 // Define the one-to-one association for order
 
+//change
 db.user.hasMany(db.order, {
   foreignKey: "userId",
 });
@@ -79,12 +83,13 @@ db.order.belongsTo(db.user, {
   foreignKey: "userId",
 });
 
+//change
 db.reviews = reviewsModel(sequelize, DataTypes);
 
-// db.reviews = reviewsModel(sequelize, DataTypes);
+db.reviews = reviewsModel(sequelize, DataTypes);
 
 // instantiate sequelize db
 
-// db.sequelize.sync({ force: true });
+db.sequelize.sync({ force: true });
 
 module.exports = db;
